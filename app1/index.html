@@ -1,0 +1,766 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080b14">
+
+    <title>Application Details</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #080b14;
+            color: white;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            margin: auto;
+            padding: 24px 22px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #648cff;
+        }
+
+        .store-badge {
+            background: #17243a;
+            color: #8eaeff;
+            padding: 7px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 35px 0;
+        }
+
+        .section-title {
+            color: #648cff;
+            font-size: 11px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .app-icon {
+            width: 115px;
+            height: 115px;
+            object-fit: cover;
+            border-radius: 25px;
+            margin-bottom: 22px;
+            background: #17243a;
+        }
+
+        .app-name {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .app-description {
+            color: #9ba8bd;
+            font-size: 13px;
+            line-height: 1.6;
+            max-width: 340px;
+            margin-bottom: 20px;
+        }
+
+        /* UPDATE NOTIFICATION */
+
+        .update-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #121827;
+            border: 1px solid #26344d;
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 25px;
+        }
+
+        .update-button:active {
+            transform: scale(0.96);
+        }
+
+        .update-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #ef4444;
+            flex-shrink: 0;
+        }
+
+        .update-dot.active {
+            background: #22c55e;
+            box-shadow: 0 0 8px #22c55e88;
+        }
+
+        /* UPDATE POPUP */
+
+        .update-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 22px;
+            background: rgba(0, 0, 0, 0.78);
+        }
+
+        .update-modal.show {
+            display: flex;
+        }
+
+        .update-box {
+            width: 100%;
+            max-width: 380px;
+            max-height: 80vh;
+            overflow-y: auto;
+            background: #121827;
+            border: 1px solid #293b5b;
+            border-radius: 18px;
+            padding: 22px;
+            text-align: left;
+        }
+
+        .update-heading {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .update-subtitle {
+            color: #8290a7;
+            font-size: 11px;
+            margin-bottom: 18px;
+        }
+
+        .update-content {
+            color: #c1ccdf;
+            font-size: 13px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            margin-bottom: 20px;
+        }
+
+        .update-close {
+            width: 100%;
+            padding: 13px;
+            background: #648cff;
+            color: white;
+            border: none;
+            border-radius: 11px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* SCREENSHOT GALLERY */
+
+        .gallery-section {
+            width: 100%;
+            margin-bottom: 28px;
+        }
+
+        .gallery-title {
+            color: #8290a7;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            margin-bottom: 13px;
+        }
+
+        .gallery-container {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 12px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding: 5px 2px 12px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .gallery-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .gallery-image {
+            flex: 0 0 78%;
+            width: 78%;
+            aspect-ratio: 9 / 16;
+            object-fit: cover;
+            border-radius: 15px;
+            background: #121827;
+            border: 1px solid #26344d;
+            scroll-snap-align: center;
+        }
+
+        .gallery-count {
+            color: #8290a7;
+            font-size: 10px;
+            margin-top: 5px;
+        }
+
+        .metadata {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            margin-bottom: 28px;
+        }
+
+        .metadata-item {
+            flex: 1;
+            background: #121827;
+            border: 1px solid #202b40;
+            border-radius: 13px;
+            padding: 13px 5px;
+        }
+
+        .metadata-label {
+            color: #8290a7;
+            font-size: 9px;
+            margin-bottom: 6px;
+        }
+
+        .metadata-value {
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .download-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            padding: 16px;
+            background: #648cff;
+            color: white;
+            border: none;
+            border-radius: 13px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .download-btn:active {
+            transform: scale(0.97);
+        }
+
+        .download-disabled {
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .close-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            padding: 15px;
+            background: #17243a;
+            color: #a9c0ff;
+            border: 1px solid #293b5b;
+            border-radius: 13px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        .close-btn:active {
+            transform: scale(0.97);
+        }
+
+        footer {
+            text-align: center;
+            color: #566176;
+            font-size: 10px;
+            padding-top: 20px;
+        }
+
+        @media (max-height: 600px) {
+            .app {
+                padding-top: 16px;
+            }
+
+            main {
+                padding: 25px 0;
+            }
+
+            .app-icon {
+                width: 85px;
+                height: 85px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <header>
+            <div class="logo">
+                Ameer<span>AppStore</span>
+            </div>
+
+            <div class="store-badge">
+                STORE v1.0
+            </div>
+        </header>
+
+        <main>
+
+            <div class="section-title">
+                APPLICATION DETAILS
+            </div>
+
+            <img
+                id="appIcon"
+                class="app-icon"
+                src="Icon.png"
+                alt="Application Icon"
+            >
+
+            <h1 class="app-name" id="appName">
+                Loading...
+            </h1>
+
+            <p class="app-description" id="appDescription">
+                Loading application information...
+            </p>
+
+            <!-- UPDATE NOTIFICATION -->
+
+            <button
+                class="update-button"
+                id="updateButton"
+                type="button"
+            >
+                <span class="update-dot" id="updateDot"></span>
+                <span id="updateText">No New Updates</span>
+            </button>
+
+            <!-- SCREENSHOT GALLERY -->
+
+            <div class="gallery-section" id="gallerySection" hidden>
+
+                <div class="gallery-title">
+                    SCREENSHOTS
+                </div>
+
+                <div
+                    class="gallery-container"
+                    id="galleryContainer"
+                ></div>
+
+                <div class="gallery-count" id="galleryCount"></div>
+
+            </div>
+
+            <!-- METADATA -->
+
+            <div class="metadata">
+
+                <div class="metadata-item">
+                    <div class="metadata-label">
+                        ACCESS
+                    </div>
+
+                    <div class="metadata-value">
+                        FREE
+                    </div>
+                </div>
+
+                <div class="metadata-item">
+                    <div class="metadata-label">
+                        VERSION
+                    </div>
+
+                    <div class="metadata-value" id="appVersion">
+                        1.0
+                    </div>
+                </div>
+
+            </div>
+
+            <a
+                id="downloadButton"
+                class="download-btn download-disabled"
+                href="#"
+                aria-disabled="true"
+            >
+                Download APK
+            </a>
+
+            <button
+                class="close-btn"
+                id="closeButton"
+                type="button"
+            >
+                Close
+            </button>
+
+        </main>
+
+        <footer>
+            © 2026 AMEERAPPSTORE. ALL RIGHTS RESERVED.
+        </footer>
+
+    </div>
+
+    <!-- UPDATE DESCRIPTION POPUP -->
+
+    <div
+        class="update-modal"
+        id="updateModal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="updateHeading"
+    >
+        <div class="update-box">
+
+            <div class="update-heading" id="updateHeading">
+                New Updates!
+            </div>
+
+            <div class="update-subtitle" id="updateSubtitle">
+                Application Update Information
+            </div>
+
+            <div class="update-content" id="updateContent"></div>
+
+            <button
+                class="update-close"
+                id="updateClose"
+                type="button"
+            >
+                Close
+            </button>
+
+        </div>
+    </div>
+
+    <!-- APP INFORMATION -->
+
+    <script src="./app-info.js"></script>
+
+    <script>
+
+        // ==========================================
+        // LOAD APPLICATION INFORMATION
+        // ==========================================
+
+        function loadAppInfo() {
+
+            const info = window.APP_INFO;
+
+            if (!info) {
+
+                document.getElementById("appName").textContent =
+                    "Application Not Found";
+
+                document.getElementById("appDescription").textContent =
+                    "Unable to load application information.";
+
+                document.getElementById("updateButton").hidden = true;
+
+                return;
+            }
+
+            document.title = info.name + " | AmeerAppStore";
+
+            document.getElementById("appName").textContent =
+                info.name || "Unknown Application";
+
+            document.getElementById("appDescription").textContent =
+                info.description || "No description available.";
+
+            document.getElementById("appVersion").textContent =
+                info.version || "1.0";
+
+            // APP ICON
+
+            const icon = document.getElementById("appIcon");
+
+            if (info.icon) {
+                icon.src = "./" + info.icon;
+            }
+
+            // SCREENSHOT GALLERY
+
+            loadGallery(info.displayImages);
+
+            // UPDATE SYSTEM
+
+            loadUpdateInfo(info);
+
+            // DOWNLOAD BUTTON
+
+            const downloadButton =
+                document.getElementById("downloadButton");
+
+            downloadButton.textContent =
+                info.downloadText || "Download APK";
+
+            if (info.downloadEnabled === true && info.downloadLink) {
+
+                downloadButton.href = info.downloadLink;
+
+                downloadButton.classList.remove(
+                    "download-disabled"
+                );
+
+                downloadButton.setAttribute(
+                    "aria-disabled",
+                    "false"
+                );
+
+            } else {
+
+                downloadButton.href = "#";
+
+                downloadButton.classList.add(
+                    "download-disabled"
+                );
+
+                downloadButton.setAttribute(
+                    "aria-disabled",
+                    "true"
+                );
+            }
+        }
+
+        // ==========================================
+        // UPDATE NOTIFICATION SYSTEM
+        // ==========================================
+
+        function loadUpdateInfo(info) {
+
+            const button =
+                document.getElementById("updateButton");
+
+            const dot =
+                document.getElementById("updateDot");
+
+            const text =
+                document.getElementById("updateText");
+
+            if (info.update === true) {
+
+                dot.classList.add("active");
+
+                text.textContent = "New Updates!";
+
+            } else {
+
+                dot.classList.remove("active");
+
+                text.textContent = "No New Updates";
+            }
+
+            // SHOW UPDATE DESCRIPTION WHEN CLICKED
+
+            button.addEventListener("click", function () {
+
+                const description =
+                    info.updateDescription;
+
+                document.getElementById("updateHeading").textContent =
+                    info.update === true
+                    ? "New Updates!"
+                    : "Update Information";
+
+                document.getElementById("updateSubtitle").textContent =
+                    "Version " + (info.version || "1.0");
+
+                document.getElementById("updateContent").textContent =
+                    description || "No update information available.";
+
+                document.getElementById("updateModal")
+                    .classList.add("show");
+
+            });
+        }
+
+        // ==========================================
+        // CLOSE UPDATE POPUP
+        // ==========================================
+
+        function closeUpdateModal() {
+
+            document.getElementById("updateModal")
+                .classList.remove("show");
+        }
+
+        document.getElementById("updateClose")
+            .addEventListener("click", closeUpdateModal);
+
+        document.getElementById("updateModal")
+            .addEventListener("click", function (event) {
+
+                if (event.target === this) {
+                    closeUpdateModal();
+                }
+            });
+
+        document.addEventListener("keydown", function (event) {
+
+            if (event.key === "Escape") {
+                closeUpdateModal();
+            }
+        });
+
+        // ==========================================
+        // SCREENSHOT GALLERY FUNCTION
+        // ==========================================
+
+        function loadGallery(images) {
+
+            const section =
+                document.getElementById("gallerySection");
+
+            const container =
+                document.getElementById("galleryContainer");
+
+            const count =
+                document.getElementById("galleryCount");
+
+            container.innerHTML = "";
+
+            if (!Array.isArray(images) || images.length === 0) {
+
+                section.hidden = true;
+                return;
+            }
+
+            section.hidden = false;
+
+            let loadedCount = 0;
+
+            images.forEach(function (imageName) {
+
+                const image = document.createElement("img");
+
+                image.className = "gallery-image";
+                image.src = "./" + imageName;
+                image.alt = "Application Screenshot";
+                image.loading = "lazy";
+
+                image.onerror = function () {
+
+                    this.remove();
+                    updateGalleryCount();
+                };
+
+                image.onload = function () {
+
+                    loadedCount++;
+                    updateGalleryCount();
+                };
+
+                container.appendChild(image);
+
+            });
+
+            function updateGalleryCount() {
+
+                const total = container.children.length;
+
+                if (total === 0) {
+
+                    section.hidden = true;
+                    return;
+                }
+
+                count.textContent =
+                    `${loadedCount} / ${total} SCREENSHOTS`;
+            }
+        }
+
+        // ==========================================
+        // CLOSE APPLICATION
+        // ==========================================
+
+        document.getElementById("closeButton")
+            .addEventListener("click", function () {
+
+                window.location.href = "../index.html";
+
+            });
+
+        // ==========================================
+        // PREVENT DISABLED DOWNLOAD
+        // ==========================================
+
+        document.getElementById("downloadButton")
+            .addEventListener("click", function (event) {
+
+                if (
+                    !window.APP_INFO ||
+                    window.APP_INFO.downloadEnabled !== true ||
+                    !window.APP_INFO.downloadLink
+                ) {
+
+                    event.preventDefault();
+
+                }
+            });
+
+        // ==========================================
+        // INITIALIZE
+        // ==========================================
+
+        loadAppInfo();
+
+    </script>
+
+</body>
+</html>
